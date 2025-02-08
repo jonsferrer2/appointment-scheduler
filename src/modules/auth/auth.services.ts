@@ -1,7 +1,8 @@
-import { IRegisterInput } from "./auth.interfaces";
+import { IRegisterInput, IMemberRegisterInput } from "./auth.interfaces";
 import { ErrorHandler } from "../../models/error-handler.model";
 import { getUserByEmail, createUser, updateUserById } from "../../models/user.model";
 import { hashString, verifyPassword } from "../../utils/helpers";
+import { getMemberByEmail, getMemberByNumber, createMember } from "../../models/member.model";
 
 export const createUserService = async (data: IRegisterInput) => {
 
@@ -13,7 +14,7 @@ export const createUserService = async (data: IRegisterInput) => {
 
     const existingEmail = await getUserByEmail(email);
     if (existingEmail) {
-        throw new ErrorHandler(422, "Email has already been taken");
+        throw new ErrorHandler(409, "Email has already been taken");
     }
 
     const obj = {
@@ -50,4 +51,34 @@ export const loginService = async (data: { email: string, password: string }) =>
     const updatedUser = await updateUserById(user._id.toString(), { sessionToken }).select("+sessionToken");
 
     return updatedUser;
+}
+
+export const createNewMember = async (body: IMemberRegisterInput) => {
+    const { firstName, lastName, middleName = "", suffix = "", email, mobileNumber } = body;
+
+    if (!firstName || !lastName || !email || !mobileNumber) {
+        throw new ErrorHandler(422, "Missing required fields");
+    }
+
+    const existingEmail = await getMemberByEmail(email);
+    if (existingEmail) {
+        throw new ErrorHandler(409, "Email has already been taken");
+    }
+
+    const existingMobileNumber = await getMemberByNumber(mobileNumber);
+    if (existingMobileNumber) {
+        throw new ErrorHandler(409, "Mobile number has already been taken");
+    }
+
+    const obj = {
+        firstName,
+        lastName,
+        middleName,
+        suffix,
+        email,
+        mobileNumber,
+        sessionToken: ""
+    }
+
+    return await createMember(obj);
 }

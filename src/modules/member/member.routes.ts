@@ -1,6 +1,9 @@
 import { Router } from "express";
-import { memberRegister } from "./member.controller";
+import { getMembers, getMemberById } from "./member.controller";
 
 const router = Router();
 
-router.post("/register", memberRegister);
+router.get("/", getMembers);
+router.get("/:id", getMemberById);
+
+export default router;

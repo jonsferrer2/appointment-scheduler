@@ -1,10 +1,16 @@
 import { ErrorHandler } from "../../models/error-handler.model";
-import { IMemberRegisterInput } from "./member.interfaces";
+import { getMembers, getMemberById } from "../../models/member.model";
 
-export const createMember = async (body: IMemberRegisterInput) => {
-    const { firstName, lastName, middleName = "", suffix = "", email, mobileNumber } = body;
+export const onGetMembers = async () => {
+    return await getMembers();
+}
 
-    if (!firstName || !lastName || !email || !mobileNumber) {
-        throw new ErrorHandler(422, "Missing required fields");
+export const onGetMemberById = async (id: string) => {
+    const user = await getMemberById(id);
+
+    if (!user) {
+        throw new ErrorHandler(404, "Member not found.");
     }
+
+    return user;
 }

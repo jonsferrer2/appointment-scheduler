@@ -6,3 +6,12 @@ export interface IRegisterInput {
     middleName?: string,
     password: string
 }
+
+export interface IMemberRegisterInput {
+    firstName: string,
+    lastName: string,
+    middleName?: string,
+    suffix?: string,
+    mobileNumber: string,
+    email: string,
+}
