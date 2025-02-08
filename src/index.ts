@@ -1,8 +1,11 @@
 import app from "./server";
-import { PORT, MONGO_URL } from "./utils/constants";
+import "dotenv/config";
 import mongoose from "mongoose";
 
-mongoose.connect(MONGO_URL);
+const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI || "";
+
+mongoose.connect(MONGO_URI);
 mongoose.connection.on("error", (error: Error) => {
     console.log(error);
 })
